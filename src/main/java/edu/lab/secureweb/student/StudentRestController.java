@@ -3,6 +3,7 @@ package edu.lab.secureweb.student;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /*
   @author   neyron
@@ -44,16 +45,19 @@ public class StudentRestController {
     }
 
     @GetMapping("/hello-user")
+    @PreAuthorize("hasRole('USER')")
     public String helloUser() {
         return "Hello User!";
     }
 
     @GetMapping("/hello-admin")
+    @PreAuthorize("hasRole('ADMIN')")
     public String helloAdmin() {
         return "Hello Admin!";
     }
 
     @GetMapping("/hello-superadmin")
+    @PreAuthorize("hasRole('SUPERADMIN')")
     public String helloSuperAdmin() {
         return "Hello SuperAdmin!";
     }
@@ -71,6 +75,11 @@ public class StudentRestController {
     @GetMapping("/view/dashboard")
     public String viewDashboard() {
         return "Welcome to the dashboard. (Access granted for USER, ADMIN)";
+    }
+
+    @GetMapping("hello/stranger")
+    public String helloStranger() {
+        return "Hello Stranger!";
     }
 
     @GetMapping("/view/stats")

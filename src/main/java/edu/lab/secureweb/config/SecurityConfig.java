@@ -8,8 +8,11 @@ package edu.lab.secureweb.config;
   @since 09.04.2025 - 21.34
 */
 
+import org.springframework.aop.Advisor;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Role;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,9 +25,17 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.http.HttpMethod;
 
+import org.springframework.security.authorization.method.AuthorizationManagerBeforeMethodInterceptor;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public static Advisor preAuthorizeMethodInterceptor() {
+        return AuthorizationManagerBeforeMethodInterceptor.preAuthorize();
+    }
 
     @Bean
     public static PasswordEncoder passwordEncoder() {
@@ -36,19 +47,19 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(req ->
                 req.requestMatchers("/index.html").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/v1/students").hasAnyRole("ADMIN", "SUPERADMIN", "USER")
-                    .requestMatchers(HttpMethod.GET, "/api/v1/students/{id}").hasAnyRole("ADMIN", "SUPERADMIN", "USER")
-                    .requestMatchers(HttpMethod.POST, "/api/v1/students").hasAnyRole("ADMIN", "SUPERADMIN")
-                    .requestMatchers(HttpMethod.PUT, "/api/v1/students").hasAnyRole("ADMIN", "SUPERADMIN")
-                    .requestMatchers(HttpMethod.DELETE, "/api/v1/students/{id}").hasRole("SUPERADMIN") // DELETE доступно лише SUPERADMIN
-                    .requestMatchers("/api/v1/students/hello-admin").hasRole("ADMIN")
-                    .requestMatchers("/api/v1/students/hello-superadmin").hasRole("SUPERADMIN")
-                    .requestMatchers("/api/v1/students/hello-user").hasRole("USER")
-                    .requestMatchers("/api/v1/students/hello-unknown").permitAll()
-
-                    .requestMatchers("/api/v1/students/view/profile").hasAnyRole("USER", "ADMIN", "SUPERADMIN")
-                    .requestMatchers("/api/v1/students/view/dashboard").hasAnyRole("USER", "ADMIN")
-                    .requestMatchers("/api/v1/students/view/stats").hasRole("SUPERADMIN")
+//                    .requestMatchers(HttpMethod.GET, "/api/v1/students").hasAnyRole("ADMIN", "SUPERADMIN", "USER")
+//                    .requestMatchers(HttpMethod.GET, "/api/v1/students/{id}").hasAnyRole("ADMIN", "SUPERADMIN", "USER")
+//                    .requestMatchers(HttpMethod.POST, "/api/v1/students").hasAnyRole("ADMIN", "SUPERADMIN")
+//                    .requestMatchers(HttpMethod.PUT, "/api/v1/students").hasAnyRole("ADMIN", "SUPERADMIN")
+//                    .requestMatchers(HttpMethod.DELETE, "/api/v1/students/{id}").hasRole("SUPERADMIN") // DELETE доступно лише SUPERADMIN
+//                    .requestMatchers("/api/v1/students/hello-admin").hasRole("ADMIN")
+//                    .requestMatchers("/api/v1/students/hello-superadmin").hasRole("SUPERADMIN")
+//                    .requestMatchers("/api/v1/students/hello-user").hasRole("USER")
+//                    .requestMatchers("/api/v1/students/hello-unknown").permitAll()
+//
+//                    .requestMatchers("/api/v1/students/view/profile").hasAnyRole("USER", "ADMIN", "SUPERADMIN")
+//                    .requestMatchers("/api/v1/students/view/dashboard").hasAnyRole("USER", "ADMIN")
+//                    .requestMatchers("/api/v1/students/view/stats").hasRole("SUPERADMIN")
                     .anyRequest().authenticated())
             .httpBasic(Customizer.withDefaults());
         return http.build();
