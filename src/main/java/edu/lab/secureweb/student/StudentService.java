@@ -20,10 +20,12 @@ public class StudentService {
 
     @PostConstruct
     void init() {
-        students.add(new Student("1", "name1", "123a"));
-        students.add(new Student("2", "name2", "123b"));
-        students.add(new Student("3", "name3", "343"));
-        studentRepository.saveAll(students);
+        if (studentRepository.count() == 0) {
+            students.add(new Student("1", "name1", "123a"));
+            students.add(new Student("2", "name2", "123b"));
+            students.add(new Student("3", "name3", "343"));
+            studentRepository.saveAll(students);
+        }
     }
 
     public List<Student> getAll() {

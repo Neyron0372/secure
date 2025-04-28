@@ -53,8 +53,28 @@ public class StudentRestController {
         return "Hello Admin!";
     }
 
+    @GetMapping("/hello-superadmin")
+    public String helloSuperAdmin() {
+        return "Hello SuperAdmin!";
+    }
+
     @GetMapping("hello-unknown")
     public String helloUnknown() {
         return "Hello Unknown!";
+    }
+
+    @GetMapping("/view/profile")
+    public String viewProfile() {
+        return "This is your profile information. (Access granted for USER, ADMIN, SUPERADMIN)";
+    }
+
+    @GetMapping("/view/dashboard")
+    public String viewDashboard() {
+        return "Welcome to the dashboard. (Access granted for USER, ADMIN)";
+    }
+
+    @GetMapping("/view/stats")
+    public String viewStats() {
+        return "Here are the detailed stats. (Access granted only for SUPERADMIN)";
     }
 }
